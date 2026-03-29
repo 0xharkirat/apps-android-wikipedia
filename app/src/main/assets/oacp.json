@@ -1,0 +1,353 @@
+{
+  "oacpVersion": "0.3",
+  "appId": "__APPLICATION_ID__",
+  "displayName": "Wikipedia",
+  "appDomains": ["knowledge", "reference", "encyclopedia", "search"],
+  "appKeywords": [
+    "wikipedia",
+    "encyclopedia",
+    "article",
+    "topic",
+    "knowledge",
+    "facts"
+  ],
+  "appAliases": ["wiki", "wikipedia app"],
+  "entityTypes": [
+    {
+      "id": "wikipedia_language",
+      "displayName": "Wikipedia language",
+      "description": "A supported Wikipedia language edition such as English, Spanish, German, or French."
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "search_articles",
+      "description": "Open Wikipedia search results for a topic, phrase, or article name.",
+      "domain": "knowledge",
+      "aliases": [
+        "search Wikipedia",
+        "look up on Wikipedia",
+        "find on Wikipedia"
+      ],
+      "examples": [
+        "search Wikipedia for Ada Lovelace",
+        "look up black holes on Wikipedia",
+        "find the Wikipedia article about Kyoto"
+      ],
+      "keywords": ["search", "lookup", "find", "article", "topic"],
+      "disambiguationHints": [
+        "Use this when the user wants Wikipedia results for a query but does not clearly specify a single exact article title.",
+        "Prefer open_article when the user clearly asks to open a specific article by title."
+      ],
+      "parameters": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": true,
+          "description": "The search text to run in Wikipedia.",
+          "examples": ["Ada Lovelace", "black holes"],
+          "prompt": "What should Wikipedia search for?"
+        }
+      ],
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search text to run in Wikipedia.",
+            "examples": ["Ada Lovelace", "black holes"]
+          }
+        },
+        "required": ["query"]
+      },
+      "confirmation": "never",
+      "executionMessage": "Searching Wikipedia.",
+      "visibility": "public",
+      "requiresForeground": true,
+      "completionMode": "foreground_handoff",
+      "sensitivity": "low",
+      "sideEffects": "Opens the Wikipedia app and shows search results.",
+      "idempotent": true,
+      "errorCodes": ["invalid_parameters", "network_unavailable", "internal_error"],
+      "resultTransport": {
+        "android": {
+          "type": "none"
+        }
+      },
+      "invoke": {
+        "android": {
+          "type": "activity",
+          "action": "__APPLICATION_ID__.ACTION_SEARCH_ARTICLES",
+          "extrasMapping": {
+            "query": "org.wikipedia.oacp.extra.QUERY"
+          }
+        }
+      }
+    },
+    {
+      "id": "open_article",
+      "description": "Open a Wikipedia article directly by title, optionally in a specific language edition.",
+      "domain": "knowledge",
+      "aliases": [
+        "open Wikipedia article",
+        "read on Wikipedia",
+        "show the Wikipedia page"
+      ],
+      "examples": [
+        "open the Wikipedia article for Ada Lovelace",
+        "show me the Kyoto page on Wikipedia",
+        "open the Spanish Wikipedia article for Barcelona"
+      ],
+      "keywords": ["open", "read", "article", "page", "encyclopedia"],
+      "disambiguationHints": [
+        "Use this when the user names a specific article title they want to open.",
+        "Prefer search_articles when the request sounds exploratory or ambiguous."
+      ],
+      "parameters": [
+        {
+          "name": "article_title",
+          "type": "string",
+          "required": true,
+          "description": "The Wikipedia article title to open.",
+          "examples": ["Ada Lovelace", "Kyoto"],
+          "prompt": "Which Wikipedia article should be opened?"
+        },
+        {
+          "name": "language_code",
+          "type": "string",
+          "required": false,
+          "description": "Optional Wikipedia language code such as en, es, de, or fr.",
+          "examples": ["en", "es", "de"],
+          "prompt": "Which Wikipedia language should be used?",
+          "entityRef": {
+            "entityType": "wikipedia_language",
+            "resolution": "allowed",
+            "entityDisambiguationPrompt": "Which Wikipedia language should be used?"
+          },
+          "entitySnapshot": [
+            {
+              "id": "en",
+              "displayName": "English",
+              "aliases": ["english wikipedia"],
+              "keywords": ["english"]
+            },
+            {
+              "id": "es",
+              "displayName": "Spanish",
+              "aliases": ["spanish wikipedia", "espanol"],
+              "keywords": ["spanish", "espanol"]
+            },
+            {
+              "id": "de",
+              "displayName": "German",
+              "aliases": ["german wikipedia", "deutsch"],
+              "keywords": ["german", "deutsch"]
+            },
+            {
+              "id": "fr",
+              "displayName": "French",
+              "aliases": ["french wikipedia", "francais"],
+              "keywords": ["french", "francais"]
+            }
+          ]
+        }
+      ],
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "article_title": {
+            "type": "string",
+            "description": "The Wikipedia article title to open.",
+            "examples": ["Ada Lovelace", "Kyoto"]
+          },
+          "language_code": {
+            "type": "string",
+            "description": "Optional Wikipedia language code such as en, es, de, or fr.",
+            "examples": ["en", "es", "de"],
+            "entityRef": {
+              "entityType": "wikipedia_language",
+              "resolution": "allowed",
+              "entityDisambiguationPrompt": "Which Wikipedia language should be used?"
+            },
+            "entitySnapshot": [
+              {
+                "id": "en",
+                "displayName": "English",
+                "aliases": ["english wikipedia"],
+                "keywords": ["english"]
+              },
+              {
+                "id": "es",
+                "displayName": "Spanish",
+                "aliases": ["spanish wikipedia", "espanol"],
+                "keywords": ["spanish", "espanol"]
+              },
+              {
+                "id": "de",
+                "displayName": "German",
+                "aliases": ["german wikipedia", "deutsch"],
+                "keywords": ["german", "deutsch"]
+              },
+              {
+                "id": "fr",
+                "displayName": "French",
+                "aliases": ["french wikipedia", "francais"],
+                "keywords": ["french", "francais"]
+              }
+            ]
+          }
+        },
+        "required": ["article_title"]
+      },
+      "confirmation": "never",
+      "executionMessage": "Opening the Wikipedia article.",
+      "visibility": "public",
+      "requiresForeground": true,
+      "completionMode": "foreground_handoff",
+      "sensitivity": "low",
+      "sideEffects": "Opens the requested Wikipedia article in the app.",
+      "idempotent": true,
+      "errorCodes": ["not_found", "invalid_parameters", "network_unavailable", "internal_error"],
+      "resultTransport": {
+        "android": {
+          "type": "none"
+        }
+      },
+      "invoke": {
+        "android": {
+          "type": "activity",
+          "action": "__APPLICATION_ID__.ACTION_OPEN_ARTICLE",
+          "extrasMapping": {
+            "article_title": "org.wikipedia.oacp.extra.ARTICLE_TITLE",
+            "language_code": "org.wikipedia.oacp.extra.LANGUAGE_CODE"
+          }
+        }
+      }
+    },
+    {
+      "id": "open_random_article",
+      "description": "Open a random Wikipedia article, optionally in a specific language edition.",
+      "domain": "knowledge",
+      "aliases": [
+        "random Wikipedia article",
+        "surprise me on Wikipedia",
+        "show something random from Wikipedia"
+      ],
+      "examples": [
+        "open a random Wikipedia article",
+        "surprise me with something from Wikipedia",
+        "show a random Spanish Wikipedia page"
+      ],
+      "keywords": ["random", "surprise", "article", "discover"],
+      "disambiguationHints": [
+        "Use this when the user explicitly asks for something random or surprising from Wikipedia."
+      ],
+      "parameters": [
+        {
+          "name": "language_code",
+          "type": "string",
+          "required": false,
+          "description": "Optional Wikipedia language code such as en, es, de, or fr.",
+          "examples": ["en", "es", "de"],
+          "prompt": "Which Wikipedia language should be used?",
+          "entityRef": {
+            "entityType": "wikipedia_language",
+            "resolution": "allowed",
+            "entityDisambiguationPrompt": "Which Wikipedia language should be used?"
+          },
+          "entitySnapshot": [
+            {
+              "id": "en",
+              "displayName": "English",
+              "aliases": ["english wikipedia"],
+              "keywords": ["english"]
+            },
+            {
+              "id": "es",
+              "displayName": "Spanish",
+              "aliases": ["spanish wikipedia", "espanol"],
+              "keywords": ["spanish", "espanol"]
+            },
+            {
+              "id": "de",
+              "displayName": "German",
+              "aliases": ["german wikipedia", "deutsch"],
+              "keywords": ["german", "deutsch"]
+            },
+            {
+              "id": "fr",
+              "displayName": "French",
+              "aliases": ["french wikipedia", "francais"],
+              "keywords": ["french", "francais"]
+            }
+          ]
+        }
+      ],
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "language_code": {
+            "type": "string",
+            "description": "Optional Wikipedia language code such as en, es, de, or fr.",
+            "examples": ["en", "es", "de"],
+            "entityRef": {
+              "entityType": "wikipedia_language",
+              "resolution": "allowed",
+              "entityDisambiguationPrompt": "Which Wikipedia language should be used?"
+            },
+            "entitySnapshot": [
+              {
+                "id": "en",
+                "displayName": "English",
+                "aliases": ["english wikipedia"],
+                "keywords": ["english"]
+              },
+              {
+                "id": "es",
+                "displayName": "Spanish",
+                "aliases": ["spanish wikipedia", "espanol"],
+                "keywords": ["spanish", "espanol"]
+              },
+              {
+                "id": "de",
+                "displayName": "German",
+                "aliases": ["german wikipedia", "deutsch"],
+                "keywords": ["german", "deutsch"]
+              },
+              {
+                "id": "fr",
+                "displayName": "French",
+                "aliases": ["french wikipedia", "francais"],
+                "keywords": ["french", "francais"]
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "confirmation": "never",
+      "executionMessage": "Opening a random Wikipedia article.",
+      "visibility": "public",
+      "requiresForeground": true,
+      "completionMode": "foreground_handoff",
+      "sensitivity": "low",
+      "sideEffects": "Opens a random Wikipedia article in the app.",
+      "idempotent": false,
+      "errorCodes": ["network_unavailable", "internal_error"],
+      "resultTransport": {
+        "android": {
+          "type": "none"
+        }
+      },
+      "invoke": {
+        "android": {
+          "type": "activity",
+          "action": "__APPLICATION_ID__.ACTION_OPEN_RANDOM_ARTICLE",
+          "extrasMapping": {
+            "language_code": "org.wikipedia.oacp.extra.LANGUAGE_CODE"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "oacpVersion": "0.3",
+  "appId": "__APPLICATION_ID__",
+  "displayName": "Wikipedia",
+  "appDomains": ["knowledge", "reference", "encyclopedia"],
+  "appKeywords": ["wikipedia", "article", "encyclopedia", "knowledge", "search", "learn", "read", "information", "wiki"],
+  "appAliases": ["wikipedia", "wiki", "the free encyclopedia"],
+  "capabilities": [
+    {
+      "id": "search_wikipedia",
+      "description": "Search for a Wikipedia article by topic or keyword.",
+      "domain": "knowledge",
+      "aliases": [
+        "search wikipedia", "look up on wikipedia", "wikipedia search",
+        "search wiki", "find article", "look up topic"
+      ],
+      "examples": [
+        "search Wikipedia for Albert Einstein",
+        "look up quantum physics on Wikipedia",
+        "find a Wikipedia article about climate change",
+        "search wiki for the Roman Empire",
+        "what does Wikipedia say about machine learning"
+      ],
+      "keywords": ["search", "look up", "find", "wikipedia", "article", "topic", "learn", "information"],
+      "disambiguationHints": [
+        "Use this when the user wants to search for a topic on Wikipedia.",
+        "For general knowledge questions, this is a good default.",
+        "If the user names a specific article title, prefer open_article instead.",
+        "This opens the search results page, not a specific article."
+      ],
+      "parameters": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": true,
+          "description": "Search term or topic to look up on Wikipedia",
+          "examples": ["Albert Einstein", "quantum physics", "climate change", "machine learning"],
+          "prompt": "What would you like to search for on Wikipedia?"
+        }
+      ],
+      "confirmation": "never",
+      "executionMessage": "Searching Wikipedia.",
+      "visibility": "public",
+      "requiresForeground": true,
+      "completionMode": "foreground_handoff",
+      "sensitivity": "low",
+      "idempotent": true,
+      "invoke": {
+        "android": {
+          "type": "activity",
+          "action": "__APPLICATION_ID__.oacp.ACTION_SEARCH"
+        }
+      }
+    },
+    {
+      "id": "open_article",
+      "description": "Open a specific Wikipedia article by its title.",
+      "domain": "knowledge",
+      "aliases": [
+        "open article", "open wikipedia page", "read article",
+        "go to article", "show article", "open wiki page"
+      ],
+      "examples": [
+        "open the Wikipedia article about Python programming",
+        "read the article on World War II",
+        "show me the Wikipedia page for Tokyo",
+        "open the German article about Berlin"
+      ],
+      "keywords": ["open", "read", "article", "page", "wikipedia", "show"],
+      "disambiguationHints": [
+        "Use this when the user names a specific article they want to read.",
+        "If the user is exploring a topic broadly, prefer search_wikipedia instead.",
+        "The language parameter lets you open articles in other language Wikipedias."
+      ],
+      "parameters": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "description": "Exact or approximate Wikipedia article title",
+          "examples": ["Python (programming language)", "World War II", "Tokyo"],
+          "prompt": "Which article would you like to open?"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "required": false,
+          "description": "Wikipedia language code (defaults to user's preferred language)",
+          "examples": ["en", "es", "de", "fr", "ja"],
+          "default": "en"
+        }
+      ],
+      "confirmation": "never",
+      "executionMessage": "Opening Wikipedia article.",
+      "visibility": "public",
+      "requiresForeground": true,
+      "completionMode": "foreground_handoff",
+      "sensitivity": "low",
+      "idempotent": true,
+      "invoke": {
+        "android": {
+          "type": "activity",
+          "action": "__APPLICATION_ID__.oacp.ACTION_OPEN_ARTICLE"
+        }
+      }
+    },
+    {
+      "id": "random_article",
+      "description": "Open a random Wikipedia article for exploration and discovery.",
+      "domain": "knowledge",
+      "aliases": [
+        "random article", "random wikipedia", "surprise me", "random page",
+        "discover article", "explore wikipedia"
+      ],
+      "examples": [
+        "show me a random Wikipedia article",
+        "open a random page",
+        "surprise me with a Wikipedia article",
+        "I'm bored, show me something interesting",
+        "random wiki"
+      ],
+      "keywords": ["random", "surprise", "discover", "explore", "interesting", "bored"],
+      "disambiguationHints": [
+        "Use this when the user wants to discover something new or be surprised.",
+        "Good for 'I'm bored' or 'show me something interesting' requests."
+      ],
+      "parameters": [],
+      "confirmation": "never",
+      "executionMessage": "Opening a random Wikipedia article.",
+      "visibility": "public",
+      "requiresForeground": true,
+      "completionMode": "foreground_handoff",
+      "sensitivity": "low",
+      "idempotent": false,
+      "invoke": {
+        "android": {
+          "type": "activity",
+          "action": "__APPLICATION_ID__.oacp.ACTION_RANDOM_ARTICLE"
+        }
+      }
+    }
+  ]
+}

@@ -489,5 +489,23 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".oacp.OacpRouterActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="${applicationId}.oacp.ACTION_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="${applicationId}.oacp.ACTION_OPEN_ARTICLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="${applicationId}.oacp.ACTION_RANDOM_ARTICLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>
